@@ -21,7 +21,7 @@
             <p>{{ session('success') }}</p>
         </div>
         @endif
-    </div>
+    </div> 
     @endif
     <form method="POST" action="{{ route('login') }}">
         @csrf
