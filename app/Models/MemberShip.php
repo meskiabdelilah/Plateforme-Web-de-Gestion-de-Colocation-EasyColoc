@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class MemberShip extends Model
 {
     protected $table = 'membership';
+    protected $fillable = [
+        'user_id',
+        'colocation_id',
+        'role',
+        'joint_at',
+        'left_at'
+    ];
 
     public function user()
     {
