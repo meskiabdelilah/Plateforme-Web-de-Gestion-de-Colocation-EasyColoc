@@ -45,7 +45,7 @@ class Colocation extends Model
 
     public function payments()
     {
-        return $this->belongsTo(Payment::class);
+        return $this->hasMany(Payment::class);
     }
 
     public function categories()
