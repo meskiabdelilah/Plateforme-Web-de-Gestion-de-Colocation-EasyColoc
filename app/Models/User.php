@@ -45,15 +45,21 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    
-    public function colocations ()
+
+    public function colocations()
     {
-        return $this->hasMany(colocation::class, 'onwer_id');
+        return $this->belongsToMany(Colocation::class, 'membership', 'user_id', 'colocation_id')
+            ->withPivot('role', 'joint_at')
+            ->withTimestamps();
     }
 
+    public function ownedColocations()
+    {
+        return $this->hasMany(Colocation::class, 'owner_id');
+    }
     public function memberships()
     {
-        return $this->hasMany(membership::class);
+        return $this->hasMany(MemberShip::class);
     }
 
     public function expenses()
@@ -66,9 +72,8 @@ class User extends Authenticatable
         return $this->hasMany(Payment::class, 'sender_id');
     }
 
-    public function paymentsReveice() {
+    public function paymentsReveice()
+    {
         return $this->hasMany(Payment::class, 'receiver_id');
     }
-
-    
 }
