@@ -18,11 +18,11 @@ class InvitationMail extends Mailable
      * Create a new message instance.
      */
 
-    public $invitation;
+   
 
-    public function __construct(Invitation $invitation)
+    public function __construct(private $invitation )
     {
-        $this->invitation = $invitation;
+        
     }
 
     /**
@@ -42,6 +42,7 @@ class InvitationMail extends Mailable
     {
         return new Content(
             view: 'emails.invitation',
+            with: ['invitation' => $this->invitation  ],
         );
     }
 

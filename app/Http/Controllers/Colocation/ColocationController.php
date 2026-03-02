@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Colocation;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Colocation;
 use App\Models\MemberShip;
 use Illuminate\Http\Request;
@@ -37,14 +38,21 @@ class ColocationController extends Controller
 
         $colocation->load(['members', 'expenses.user', 'categories']);
 
-        return view('colocation.show', compact('colocation'));
+        // Global categories (available to all colocations)
+        $globalCategories = Category::whereNull('colocation_id')->get();
+
+        // Categories specific to this colocation
+        $colocationCategories = Category::where('colocation_id', $colocation->id)->get();
+
+        return view('colocation.show', compact('colocation', 'globalCategories', 'colocationCategories'));
     }
 
-    
+
+
     public function store(Request $request)
     {
         $user = auth()->user();
-        
+
         $hasActiveColocation = $user->colocations()
             ->wherePivot('left_at', null)
             ->exists();

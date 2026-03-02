@@ -17,4 +17,14 @@ class Category extends Model
     {
         return $this->hasMany(Expense::class);
     }
+
+    public function scopeGlobal($query)
+    {
+        return $query->whereNull('colocation_id');
+    }
+
+    public function scopeForColocation($query, $colocationId)
+    {
+        return $query->where('colocation_id', $colocationId);
+    }
 }
