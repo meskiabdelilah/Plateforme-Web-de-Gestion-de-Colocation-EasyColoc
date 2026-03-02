@@ -43,11 +43,15 @@ class InvitationController extends Controller
             'colocation_id' => $colocation->id,
             'email' => $request->email,
             'token' => Str::random(40),
-                'status' => 'pending',
-                'expires_at' => now()->addDays(2),
+            'status' => 'pending',
+            'expires_at' => now()->addDays(2),
         ]);
 
+        $colocation = Colocation::findOrFail($invitation->colocation_id);
+
         Mail::to($email)->send(new InvitationMail($invitation));
+        // Mail::to('testreceiver@gmail.com')->send(new InvitationMail($invitation));
+
         return back()->with('success', 'Invitation envoyée avec succès !');
     }
 
@@ -68,13 +72,12 @@ class InvitationController extends Controller
             ->where('expires_at', '>', now())
             ->firstOrFail();
         $user = auth()->user();
-        
+
         if ($user->email !== $invitation->email) {
             return redirect()->route('dashboard')->with('error', 'Cet email ne correspond pas à l\'invitation.');
         }
 
-        DB::transaction(function() use($invitation, $user)
-        {
+        DB::transaction(function () use ($invitation, $user) {
             $invitation->update(['status' => 'accepted']);
 
             MemberShip::create([
@@ -91,14 +94,13 @@ class InvitationController extends Controller
     public function reject($token)
     {
         $invitation = Invitation::where('token', $token)
-        ->where('status', 'pending')
-        ->firstOrFail();
+            ->where('status', 'pending')
+            ->firstOrFail();
 
         $invitation->update([
-            'status'=> 'expired'
+            'status' => 'expired'
         ]);
-        
+
         return redirect()->route('dashboard')->with('success', 'Invitation refusée.');
     }
-
 }
